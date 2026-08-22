@@ -1,0 +1,3022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Wallify - HD Wallpapers</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#08080d">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  background:#08080d;
+  color:#fff;
+
+  min-height:100vh;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  -webkit-tap-highlight-color:transparent;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+
+  padding:
+    24px
+    20px
+    18px;
+
+  text-align:center;
+
+  background:#08080d;
+
+  border-bottom:
+    1px solid #292933;
+}
+
+.logo{
+
+  font-size:42px;
+
+  font-weight:800;
+
+  letter-spacing:-1px;
+}
+
+.logo span{
+  color:#7c4dff;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search-area{
+
+  padding:
+    20px
+    20px
+    14px;
+
+  background:#08080d;
+}
+
+.search-box{
+  position:relative;
+}
+
+#searchInput{
+
+  width:100%;
+
+  height:58px;
+
+  border-radius:30px;
+
+  border:
+    1px solid #393943;
+
+  background:#15151d;
+
+  color:#fff;
+
+  padding:
+    0 54px
+    0 24px;
+
+  outline:none;
+
+  font-size:18px;
+
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+
+#searchInput:focus{
+
+  border-color:#7c4dff;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(124,77,255,.12);
+}
+
+#searchInput::placeholder{
+  color:#777783;
+}
+
+.clear-search{
+
+  position:absolute;
+
+  right:8px;
+
+  top:50%;
+
+  transform:
+    translateY(-50%);
+
+  width:42px;
+
+  height:42px;
+
+  border:0;
+
+  border-radius:50%;
+
+  background:#292932;
+
+  color:#aaa;
+
+  font-size:24px;
+
+  display:none;
+
+  cursor:pointer;
+}
+
+.clear-search.show{
+  display:block;
+}
+
+
+/* =========================================================
+   SEARCH RESULTS AREA
+   IMPORTANT:
+   This is immediately below the search bar.
+========================================================= */
+
+#searchResultsSection{
+
+  display:none;
+
+  padding:
+    8px
+    20px
+    35px;
+}
+
+#searchResultsSection.show{
+  display:block;
+}
+
+.search-result-header{
+
+  display:flex;
+
+  justify-content:
+    space-between;
+
+  align-items:center;
+
+  gap:12px;
+
+  margin:
+    8px
+    0
+    18px;
+}
+
+.search-result-title{
+
+  font-size:30px;
+
+  font-weight:800;
+}
+
+.search-result-count{
+
+  color:#85858e;
+
+  font-size:15px;
+
+  white-space:nowrap;
+}
+
+.search-result-subtitle{
+
+  color:#85858e;
+
+  font-size:15px;
+
+  margin-bottom:20px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+
+  margin:
+    14px
+    20px
+    18px;
+
+  height:280px;
+
+  min-height:0;
+
+  border-radius:28px;
+
+  overflow:hidden;
+
+  position:relative;
+
+  border:
+    1px solid #302b43;
+
+  background:#15111f;
+}
+
+.hero-slides{
+
+  position:absolute;
+
+  inset:0;
+}
+
+.hero-image{
+
+  position:absolute;
+
+  inset:0;
+
+  width:100%;
+
+  height:100%;
+
+  object-fit:cover;
+
+  opacity:0;
+
+  transition:
+    opacity .7s ease;
+}
+
+.hero-image.show{
+  opacity:1;
+}
+
+.hero-overlay{
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.05),
+      rgba(0,0,0,.82)
+    );
+
+  display:flex;
+
+  align-items:flex-end;
+
+  padding:24px;
+}
+
+.hero-content{
+
+  position:relative;
+
+  z-index:2;
+}
+
+.hero-title{
+
+  font-size:32px;
+
+  font-weight:800;
+
+  line-height:1.04;
+
+  text-shadow:
+    0 3px 15px
+    rgba(0,0,0,.7);
+}
+
+.hero-title span{
+  color:#8b5cff;
+}
+
+.hero-subtitle{
+
+  margin-top:9px;
+
+  color:#d0cfd6;
+
+  font-size:15px;
+
+  line-height:1.35;
+}
+
+
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+.categories{
+
+  display:flex;
+
+  gap:12px;
+
+  overflow-x:auto;
+
+  padding:
+    8px
+    20px
+    22px;
+
+  scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
+}
+
+.category-btn{
+
+  flex:
+    0 0 auto;
+
+  padding:
+    13px
+    22px;
+
+  border-radius:30px;
+
+  border:
+    1px solid #363641;
+
+  background:#14141b;
+
+  color:#d8d8df;
+
+  cursor:pointer;
+
+  white-space:nowrap;
+
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    transform .15s ease;
+}
+
+.category-btn:active{
+  transform:scale(.96);
+}
+
+.category-btn.active{
+
+  background:#7c4dff;
+
+  color:#fff;
+
+  border-color:#7c4dff;
+}
+
+
+/* =========================================================
+   MAIN SECTION
+========================================================= */
+
+.section{
+
+  padding:
+    8px
+    20px
+    50px;
+}
+
+.section-header{
+
+  display:flex;
+
+  justify-content:
+    space-between;
+
+  align-items:center;
+
+  gap:10px;
+
+  margin-bottom:20px;
+}
+
+.section-header h2{
+
+  font-size:32px;
+
+  line-height:1.1;
+}
+
+.count{
+
+  color:#85858e;
+
+  font-size:15px;
+
+  white-space:nowrap;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.wallpaper-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0,1fr)
+    );
+
+  gap:16px;
+}
+
+@media(min-width:700px){
+
+  .wallpaper-grid{
+
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(0,1fr)
+      );
+  }
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.wallpaper-card{
+
+  background:#111118;
+
+  border:
+    1px solid #292932;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  position:relative;
+}
+
+.image-wrap{
+
+  position:relative;
+
+  width:100%;
+
+  aspect-ratio:9/14;
+
+  background:#181820;
+
+  overflow:hidden;
+
+  cursor:pointer;
+}
+
+.wallpaper-image{
+
+  width:100%;
+
+  height:100%;
+
+  object-fit:cover;
+
+  display:block;
+
+  transition:
+    transform .3s ease;
+}
+
+.image-wrap:hover
+.wallpaper-image{
+
+  transform:scale(1.03);
+}
+
+
+/* NEW BADGE */
+
+.new-badge{
+
+  position:absolute;
+
+  top:10px;
+
+  left:10px;
+
+  z-index:3;
+
+  background:#7c4dff;
+
+  color:#fff;
+
+  padding:
+    7px
+    11px;
+
+  border-radius:18px;
+
+  font-size:11px;
+
+  font-weight:800;
+
+  box-shadow:
+    0 5px 18px
+    rgba(0,0,0,.3);
+}
+
+
+/* =========================================================
+   CARD INFO
+========================================================= */
+
+.card-info{
+
+  padding:13px;
+}
+
+.wallpaper-title{
+
+  font-size:16px;
+
+  font-weight:700;
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+}
+
+.wallpaper-category{
+
+  margin-top:5px;
+
+  color:#858590;
+
+  font-size:13px;
+}
+
+.actions{
+
+  display:flex;
+
+  gap:8px;
+
+  margin-top:12px;
+}
+
+.action-btn{
+
+  flex:1;
+
+  min-height:41px;
+
+  border-radius:12px;
+
+  border:
+    1px solid #363640;
+
+  background:#181820;
+
+  color:#fff;
+
+  cursor:pointer;
+
+  font-size:13px;
+
+  transition:
+    transform .1s ease,
+    background .2s ease;
+}
+
+.action-btn:active{
+  transform:scale(.96);
+}
+
+.like-btn.liked{
+
+  border-color:#ff4d7d;
+
+  color:#ff4d7d;
+}
+
+.download-btn{
+
+  background:#7c4dff;
+
+  border-color:#7c4dff;
+}
+
+
+/* =========================================================
+   LOADING / EMPTY
+========================================================= */
+
+.loading{
+
+  text-align:center;
+
+  padding:
+    60px
+    20px;
+
+  color:#888894;
+
+  font-size:18px;
+
+  grid-column:
+    1 / -1;
+}
+
+.empty{
+
+  text-align:center;
+
+  padding:
+    60px
+    20px;
+
+  color:#777783;
+
+  grid-column:
+    1 / -1;
+}
+
+.no-results{
+
+  text-align:center;
+
+  padding:
+    45px
+    20px;
+
+  color:#777783;
+
+  grid-column:
+    1 / -1;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+#toast{
+
+  position:fixed;
+
+  left:50%;
+
+  bottom:25px;
+
+  transform:
+    translateX(-50%)
+    translateY(100px);
+
+  background:#202028;
+
+  border:
+    1px solid #3a3a46;
+
+  color:#fff;
+
+  padding:
+    14px
+    20px;
+
+  border-radius:14px;
+
+  z-index:99999;
+
+  opacity:0;
+
+  transition:
+    all .3s ease;
+
+  max-width:90%;
+
+  text-align:center;
+}
+
+#toast.show{
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+
+  opacity:1;
+}
+
+
+/* =========================================================
+   FULLSCREEN PREVIEW
+========================================================= */
+
+.preview{
+
+  position:fixed;
+
+  inset:0;
+
+  background:
+    rgba(0,0,0,.95);
+
+  z-index:10000;
+
+  display:none;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:20px;
+}
+
+.preview.show{
+  display:flex;
+}
+
+.preview-image{
+
+  max-width:100%;
+
+  max-height:88vh;
+
+  object-fit:contain;
+
+  border-radius:14px;
+}
+
+.preview-close{
+
+  position:absolute;
+
+  top:18px;
+
+  right:18px;
+
+  width:48px;
+
+  height:48px;
+
+  border:0;
+
+  border-radius:50%;
+
+  background:
+    rgba(255,255,255,.12);
+
+  color:#fff;
+
+  font-size:30px;
+
+  cursor:pointer;
+
+  z-index:2;
+}
+
+.preview-title{
+
+  position:absolute;
+
+  bottom:18px;
+
+  left:20px;
+
+  right:20px;
+
+  text-align:center;
+
+  color:#fff;
+
+  font-size:17px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:600px){
+
+  header{
+    padding:
+      20px
+      20px
+      15px;
+  }
+
+  .logo{
+    font-size:36px;
+  }
+
+  .search-area{
+    padding:
+      15px
+      20px
+      10px;
+  }
+
+  #searchInput{
+    height:56px;
+    font-size:17px;
+  }
+
+  .hero{
+    height:280px;
+    margin:
+      14px
+      20px
+      16px;
+    border-radius:28px;
+  }
+
+  .hero-overlay{
+    padding:22px;
+  }
+
+  .hero-title{
+    font-size:31px;
+  }
+
+  .hero-subtitle{
+    font-size:15px;
+  }
+
+  .section-header h2{
+    font-size:30px;
+  }
+
+  .search-result-title{
+    font-size:29px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media(max-width:380px){
+
+  .hero{
+    height:260px;
+  }
+
+  .hero-title{
+    font-size:27px;
+  }
+
+  .hero-subtitle{
+    font-size:14px;
+  }
+
+  .wallpaper-grid{
+    gap:12px;
+  }
+
+  .card-info{
+    padding:10px;
+  }
+
+  .action-btn{
+    font-size:12px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+  <div class="logo">
+    Wall<span>ify</span>
+  </div>
+
+</header>
+
+
+<!-- =====================================================
+     SEARCH
+===================================================== -->
+
+<div class="search-area">
+
+  <div class="search-box">
+
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search wallpapers..."
+      autocomplete="off"
+      spellcheck="false"
+    >
+
+    <button
+      id="clearSearch"
+      class="clear-search"
+      type="button"
+      aria-label="Clear search"
+    >
+      ×
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     SEARCH RESULTS
+     IMPORTANT:
+     It appears immediately below search.
+===================================================== -->
+
+<section
+  id="searchResultsSection"
+>
+
+  <div class="search-result-header">
+
+    <h2 class="search-result-title">
+      Search Results
+    </h2>
+
+    <div
+      id="searchResultCount"
+      class="search-result-count"
+    >
+      0 wallpapers
+    </div>
+
+  </div>
+
+  <div
+    id="searchResultSubtitle"
+    class="search-result-subtitle"
+  ></div>
+
+  <div
+    id="searchResultGrid"
+    class="wallpaper-grid"
+  ></div>
+
+</section>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section
+  id="heroSection"
+  class="hero"
+>
+
+  <div
+    id="heroSlides"
+    class="hero-slides"
+  ></div>
+
+  <div class="hero-overlay">
+
+    <div class="hero-content">
+
+      <div class="hero-title">
+
+        Discover
+        <span>Beautiful</span><br>
+        Wallpapers
+
+      </div>
+
+      <div class="hero-subtitle">
+
+        Download beautiful wallpapers
+        for your device.
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     CATEGORIES
+===================================================== -->
+
+<div
+  id="categories"
+  class="categories"
+>
+
+
+  <button
+    class="category-btn"
+    data-category="New"
+  >
+     New
+  </button>
+
+
+  <button
+    class="category-btn active"
+    data-category="All"
+  >
+    All
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Nature"
+  >
+    Nature
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Cars"
+  >
+    Cars
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Anime"
+  >
+    Anime
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Gaming"
+  >
+    Gaming
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Space"
+  >
+    Space
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="God"
+  >
+    God
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Aesthetic"
+  >
+    Aesthetic
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Animals"
+  >
+    Animals
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="City"
+  >
+    City
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Architecture"
+  >
+    Architecture
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Sports"
+  >
+    Sports
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Technology"
+  >
+    Technology
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Luxury"
+  >
+    Luxury
+  </button>
+
+
+  <button
+    class="category-btn"
+    data-category="Travel"
+  >
+    Travel
+  </button>
+
+
+</div>
+
+
+<!-- =====================================================
+     LATEST SECTION
+===================================================== -->
+
+<section
+  id="latestSection"
+  class="section"
+>
+
+  <div class="section-header">
+
+    <h2 id="sectionTitle">
+      Latest Wallpapers
+    </h2>
+
+    <div
+      id="wallpaperCount"
+      class="count"
+    >
+      0 wallpapers
+    </div>
+
+  </div>
+
+
+  <div
+    id="wallpaperGrid"
+    class="wallpaper-grid"
+  >
+
+    <div class="loading">
+      Loading wallpapers...
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div id="toast"></div>
+
+
+<!-- =====================================================
+     PREVIEW
+===================================================== -->
+
+<div
+  id="preview"
+  class="preview"
+>
+
+  <button
+    id="previewClose"
+    class="preview-close"
+    type="button"
+    aria-label="Close"
+  >
+    ×
+  </button>
+
+
+  <img
+    id="previewImage"
+    class="preview-image"
+    src=""
+    alt="Wallpaper preview"
+  >
+
+
+  <div
+    id="previewTitle"
+    class="preview-title"
+  ></div>
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   SUPABASE CONFIG
+========================================================= */
+
+const SUPABASE_URL =
+  "https://xmlvgdkpmukjwnmfipbr.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_si1g8fi2va2k96oCp7_kHg_q6w6JnB-";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let wallpapers = [];
+
+let selectedCategory = "All";
+
+let heroIndex = 0;
+
+let heroTimer = null;
+
+
+/*
+  New category कितने newest wallpapers
+  दिखाएगी.
+*/
+const NEW_LIMIT = 20;
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const grid =
+  document.getElementById(
+    "wallpaperGrid"
+  );
+
+
+const count =
+  document.getElementById(
+    "wallpaperCount"
+  );
+
+
+const searchInput =
+  document.getElementById(
+    "searchInput"
+  );
+
+
+const clearSearch =
+  document.getElementById(
+    "clearSearch"
+  );
+
+
+const heroSection =
+  document.getElementById(
+    "heroSection"
+  );
+
+
+const heroSlides =
+  document.getElementById(
+    "heroSlides"
+  );
+
+
+const latestSection =
+  document.getElementById(
+    "latestSection"
+  );
+
+
+const sectionTitle =
+  document.getElementById(
+    "sectionTitle"
+  );
+
+
+const searchResultsSection =
+  document.getElementById(
+    "searchResultsSection"
+  );
+
+
+const searchResultGrid =
+  document.getElementById(
+    "searchResultGrid"
+  );
+
+
+const searchResultCount =
+  document.getElementById(
+    "searchResultCount"
+  );
+
+
+const searchResultSubtitle =
+  document.getElementById(
+    "searchResultSubtitle"
+  );
+
+
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
+
+const preview =
+  document.getElementById(
+    "preview"
+  );
+
+
+const previewImage =
+  document.getElementById(
+    "previewImage"
+  );
+
+
+const previewTitle =
+  document.getElementById(
+    "previewTitle"
+  );
+
+
+const previewClose =
+  document.getElementById(
+    "previewClose"
+  );
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message){
+
+  toast.textContent =
+    message;
+
+  toast.classList.add(
+    "show"
+  );
+
+  setTimeout(
+    () => {
+
+      toast.classList.remove(
+        "show"
+      );
+
+    },
+    2500
+  );
+
+}
+
+
+/* =========================================================
+   DATE HELPERS
+========================================================= */
+
+function getCreatedTime(wallpaper){
+
+  const value =
+    wallpaper.created_at;
+
+  if(!value){
+    return 0;
+  }
+
+  const time =
+    new Date(value).getTime();
+
+  return Number.isFinite(time)
+    ? time
+    : 0;
+}
+
+
+/*
+  हमेशा newest first.
+  अगर created_at same/missing हो,
+  तो original order preserve करने की कोशिश.
+*/
+
+function sortNewestFirst(list){
+
+  return [...list].sort(
+    (a,b) => {
+
+      const timeA =
+        getCreatedTime(a);
+
+      const timeB =
+        getCreatedTime(b);
+
+      return timeB - timeA;
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   LIKE STORAGE
+========================================================= */
+
+function likeKey(id){
+
+  return (
+    "wallify_user_like_" +
+    String(id)
+  );
+
+}
+
+
+function localLikeKey(id){
+
+  return (
+    "wallify_like_count_" +
+    String(id)
+  );
+
+}
+
+
+function isLiked(id){
+
+  return (
+    localStorage.getItem(
+      likeKey(id)
+    ) === "true"
+  );
+
+}
+
+
+function getLocalLikeCount(id){
+
+  return Number(
+    localStorage.getItem(
+      localLikeKey(id)
+    ) || 0
+  );
+
+}
+
+
+function saveLocalLikeCount(
+  id,
+  value
+){
+
+  localStorage.setItem(
+    localLikeKey(id),
+    String(
+      Math.max(
+        0,
+        Number(value) || 0
+      )
+    )
+  );
+
+}
+
+
+/* =========================================================
+   LOAD WALLPAPERS
+========================================================= */
+
+async function loadWallpapers(){
+
+  grid.innerHTML = `
+    <div class="loading">
+      Loading wallpapers...
+    </div>
+  `;
+
+
+  try{
+
+    const result =
+      await supabaseClient
+        .from("wallpapers")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(result.error){
+
+      console.error(
+        "Supabase load error:",
+        result.error
+      );
+
+      grid.innerHTML = `
+        <div class="empty">
+          Unable to load wallpapers.
+        </div>
+      `;
+
+      showToast(
+        "Unable to load wallpapers."
+      );
+
+      return;
+    }
+
+
+    wallpapers =
+      sortNewestFirst(
+        result.data || []
+      );
+
+
+    /*
+      Prepare likes.
+    */
+
+    wallpapers.forEach(
+      wallpaper => {
+
+        if(
+          typeof wallpaper.likes ===
+          "number"
+        ){
+
+          wallpaper._likes =
+            wallpaper.likes;
+
+        }else{
+
+          wallpaper._likes =
+            getLocalLikeCount(
+              wallpaper.id
+            );
+
+        }
+
+      }
+    );
+
+
+    renderMain();
+
+
+    createHeroSlides();
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    grid.innerHTML = `
+      <div class="empty">
+        Something went wrong.
+      </div>
+    `;
+
+    showToast(
+      "Something went wrong."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SEARCH FILTER
+========================================================= */
+
+function getSearchResults(){
+
+  const search =
+    searchInput.value
+      .trim()
+      .toLowerCase();
+
+
+  if(!search){
+    return [];
+  }
+
+
+  return wallpapers.filter(
+    wallpaper => {
+
+      const title =
+        String(
+          wallpaper.title || ""
+        ).toLowerCase();
+
+
+      const category =
+        String(
+          wallpaper.category || ""
+        ).toLowerCase();
+
+
+      const description =
+        String(
+          wallpaper.description || ""
+        ).toLowerCase();
+
+
+      return (
+        title.includes(search) ||
+        category.includes(search) ||
+        description.includes(search)
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CATEGORY FILTER
+========================================================= */
+
+function getCategoryResults(){
+
+  const selected =
+    selectedCategory
+      .toLowerCase();
+
+
+  /*
+    NEW:
+    newest wallpapers.
+  */
+
+  if(selected === "new"){
+
+    return wallpapers
+      .slice(
+        0,
+        NEW_LIMIT
+      );
+
+  }
+
+
+  /*
+    ALL:
+    already sorted newest first.
+  */
+
+  if(selected === "all"){
+
+    return wallpapers;
+
+  }
+
+
+  /*
+    Normal category.
+  */
+
+  return wallpapers.filter(
+    wallpaper => {
+
+      return String(
+        wallpaper.category || ""
+      )
+      .toLowerCase() ===
+      selected;
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CREATE CARD
+========================================================= */
+
+function createWallpaperCard(
+  wallpaper,
+  isNew = false
+){
+
+  const card =
+    document.createElement(
+      "article"
+    );
+
+  card.className =
+    "wallpaper-card";
+
+
+  /* IMAGE */
+
+  const imageWrap =
+    document.createElement(
+      "div"
+    );
+
+  imageWrap.className =
+    "image-wrap";
+
+
+  const image =
+    document.createElement(
+      "img"
+    );
+
+  image.className =
+    "wallpaper-image";
+
+  image.src =
+    wallpaper.image_url || "";
+
+  image.alt =
+    wallpaper.title ||
+    "Wallpaper";
+
+  image.loading =
+    "lazy";
+
+
+  image.onerror =
+    function(){
+
+      this.style.opacity =
+        "0";
+
+    };
+
+
+  /*
+    NEW badge.
+  */
+
+  if(isNew){
+
+    const badge =
+      document.createElement(
+        "div"
+      );
+
+    badge.className =
+      "new-badge";
+
+    badge.textContent =
+      "NEW";
+
+    imageWrap.appendChild(
+      badge
+    );
+
+  }
+
+
+  /*
+    Image click.
+  */
+
+  imageWrap.addEventListener(
+    "click",
+    () => {
+
+      openPreview(
+        wallpaper.image_url,
+        wallpaper.title
+      );
+
+    }
+  );
+
+
+  imageWrap.appendChild(
+    image
+  );
+
+
+  /* INFO */
+
+  const info =
+    document.createElement(
+      "div"
+    );
+
+  info.className =
+    "card-info";
+
+
+  /* TITLE */
+
+  const title =
+    document.createElement(
+      "div"
+    );
+
+  title.className =
+    "wallpaper-title";
+
+  title.textContent =
+    wallpaper.title ||
+    "Wallpaper";
+
+
+  /* CATEGORY */
+
+  const category =
+    document.createElement(
+      "div"
+    );
+
+  category.className =
+    "wallpaper-category";
+
+  category.textContent =
+    wallpaper.category ||
+    "Wallpaper";
+
+
+  /* ACTIONS */
+
+  const actions =
+    document.createElement(
+      "div"
+    );
+
+  actions.className =
+    "actions";
+
+
+  /* LIKE */
+
+  const like =
+    document.createElement(
+      "button"
+    );
+
+  like.type =
+    "button";
+
+  like.className =
+    "action-btn like-btn";
+
+
+  updateLikeButton(
+    like,
+    wallpaper
+  );
+
+
+  like.addEventListener(
+    "click",
+    event => {
+
+      event.stopPropagation();
+
+      toggleLike(
+        wallpaper.id
+      );
+
+    }
+  );
+
+
+  /* DOWNLOAD */
+
+  const download =
+    document.createElement(
+      "button"
+    );
+
+  download.type =
+    "button";
+
+  download.className =
+    "action-btn download-btn";
+
+  download.textContent =
+    "↓ Download";
+
+
+  download.addEventListener(
+    "click",
+    event => {
+
+      event.stopPropagation();
+
+      downloadWallpaper(
+        wallpaper.image_url,
+        wallpaper.title ||
+        "wallpaper"
+      );
+
+    }
+  );
+
+
+  actions.appendChild(
+    like
+  );
+
+  actions.appendChild(
+    download
+  );
+
+
+  info.appendChild(
+    title
+  );
+
+  info.appendChild(
+    category
+  );
+
+  info.appendChild(
+    actions
+  );
+
+
+  card.appendChild(
+    imageWrap
+  );
+
+  card.appendChild(
+    info
+  );
+
+
+  return card;
+
+}
+
+
+/* =========================================================
+   RENDER MAIN
+========================================================= */
+
+function renderMain(){
+
+  /*
+    If user is searching,
+    search results take priority.
+  */
+
+  const search =
+    searchInput.value.trim();
+
+
+  if(search){
+
+    renderSearchResults();
+
+    return;
+
+  }
+
+
+  searchResultsSection.classList.remove(
+    "show"
+  );
+
+
+  heroSection.style.display =
+    "";
+
+
+  document.getElementById(
+    "categories"
+  ).style.display =
+    "";
+
+
+  latestSection.style.display =
+    "";
+
+
+  const results =
+    getCategoryResults();
+
+
+  /*
+    Section title.
+  */
+
+  if(
+    selectedCategory ===
+    "New"
+  ){
+
+    sectionTitle.textContent =
+      "New Wallpapers";
+
+  }else if(
+    selectedCategory !==
+    "All"
+  ){
+
+    sectionTitle.textContent =
+      selectedCategory +
+      " Wallpapers";
+
+  }else{
+
+    sectionTitle.textContent =
+      "Latest Wallpapers";
+
+  }
+
+
+  count.textContent =
+    results.length +
+    (
+      results.length === 1
+        ? " wallpaper"
+        : " wallpapers"
+    );
+
+
+  grid.innerHTML =
+    "";
+
+
+  if(!results.length){
+
+    grid.innerHTML = `
+      <div class="no-results">
+        No wallpapers found.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  /*
+    New category में सभी newest
+    items को NEW badge मिलेगा.
+  */
+
+  results.forEach(
+    (wallpaper,index) => {
+
+      const isNew =
+        selectedCategory ===
+        "New"
+        ? true
+        : index === 0 &&
+          selectedCategory === "All";
+
+
+      grid.appendChild(
+        createWallpaperCard(
+          wallpaper,
+          isNew
+        )
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SEARCH RESULTS RENDER
+========================================================= */
+
+function renderSearchResults(){
+
+  const search =
+    searchInput.value
+      .trim();
+
+
+  if(!search){
+
+    searchResultsSection.classList.remove(
+      "show"
+    );
+
+    heroSection.style.display =
+      "";
+
+    document.getElementById(
+      "categories"
+    ).style.display =
+      "";
+
+    latestSection.style.display =
+      "";
+
+    renderMain();
+
+    return;
+
+  }
+
+
+  /*
+    Search mode.
+  */
+
+  searchResultsSection.classList.add(
+    "show"
+  );
+
+
+  /*
+    IMPORTANT:
+    Search results ऊपर रहेंगे.
+    Hero और categories hide होंगे.
+  */
+
+  heroSection.style.display =
+    "none";
+
+
+  document.getElementById(
+    "categories"
+  ).style.display =
+    "none";
+
+
+  latestSection.style.display =
+    "none";
+
+
+  const results =
+    getSearchResults();
+
+
+  searchResultCount.textContent =
+    results.length +
+    (
+      results.length === 1
+        ? " wallpaper"
+        : " wallpapers"
+    );
+
+
+  searchResultSubtitle.innerHTML =
+    "Showing results for <strong>" +
+    escapeHtml(search) +
+    "</strong>";
+
+
+  searchResultGrid.innerHTML =
+    "";
+
+
+  if(!results.length){
+
+    searchResultGrid.innerHTML = `
+      <div class="no-results">
+        No wallpapers found for
+        "<strong>${escapeHtml(search)}</strong>".
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  results.forEach(
+    wallpaper => {
+
+      searchResultGrid.appendChild(
+        createWallpaperCard(
+          wallpaper,
+          false
+        )
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   LIKE BUTTON
+========================================================= */
+
+function updateLikeButton(
+  button,
+  wallpaper
+){
+
+  const liked =
+    isLiked(
+      wallpaper.id
+    );
+
+
+  const likes =
+    Number(
+      wallpaper._likes || 0
+    );
+
+
+  button.innerHTML =
+    (
+      liked
+        ? "♥ "
+        : "♡ "
+    ) +
+    likes;
+
+
+  button.classList.toggle(
+    "liked",
+    liked
+  );
+
+}
+
+
+/* =========================================================
+   LIKE
+========================================================= */
+
+async function toggleLike(id){
+
+  const wallpaper =
+    wallpapers.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if(!wallpaper){
+    return;
+  }
+
+
+  const alreadyLiked =
+    isLiked(id);
+
+
+  let newLikes =
+    Number(
+      wallpaper._likes || 0
+    );
+
+
+  if(alreadyLiked){
+
+    newLikes =
+      Math.max(
+        0,
+        newLikes - 1
+      );
+
+  }else{
+
+    newLikes++;
+
+  }
+
+
+  wallpaper._likes =
+    newLikes;
+
+
+  localStorage.setItem(
+    likeKey(id),
+    alreadyLiked
+      ? "false"
+      : "true"
+  );
+
+
+  saveLocalLikeCount(
+    id,
+    newLikes
+  );
+
+
+  /*
+    Try Supabase.
+  */
+
+  try{
+
+    const result =
+      await supabaseClient
+        .from("wallpapers")
+        .update({
+          likes:newLikes
+        })
+        .eq(
+          "id",
+          id
+        );
+
+
+    if(result.error){
+
+      console.warn(
+        "Supabase like update:",
+        result.error.message
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Like update error:",
+      error
+    );
+
+  }
+
+
+  showToast(
+    alreadyLiked
+      ? "Like removed"
+      : "Liked"
+  );
+
+
+  renderMain();
+
+}
+
+
+/* =========================================================
+   DOWNLOAD
+   IMPORTANT:
+   NO BLOB URL.
+========================================================= */
+
+function downloadWallpaper(
+  url,
+  title
+){
+
+  if(!url){
+
+    showToast(
+      "Image URL is missing."
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    const cleanTitle =
+      String(
+        title ||
+        "wallpaper"
+      )
+      .replace(
+        /[\\/:*?"<>|]/g,
+        "_"
+      )
+      .trim()
+      .slice(
+        0,
+        100
+      );
+
+
+    let downloadUrl =
+      url;
+
+
+    /*
+      Supabase Storage URL:
+      add download parameter.
+
+      This remains HTTPS.
+      No blob: URL.
+    */
+
+    try{
+
+      const parsed =
+        new URL(url);
+
+
+      parsed.searchParams.set(
+        "download",
+        cleanTitle +
+        ".jpg"
+      );
+
+
+      downloadUrl =
+        parsed.toString();
+
+    }catch(error){
+
+      downloadUrl =
+        url;
+
+    }
+
+
+    const link =
+      document.createElement(
+        "a"
+      );
+
+
+    link.href =
+      downloadUrl;
+
+
+    link.download =
+      cleanTitle +
+      ".jpg";
+
+
+    link.target =
+      "_blank";
+
+
+    link.rel =
+      "noopener";
+
+
+    document.body.appendChild(
+      link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    showToast(
+      "Download started."
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Download error:",
+      error
+    );
+
+
+    /*
+      Final HTTPS fallback.
+    */
+
+    window.open(
+      url,
+      "_blank"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+function openPreview(
+  imageUrl,
+  title
+){
+
+  if(!imageUrl){
+
+    showToast(
+      "Image URL is missing."
+    );
+
+    return;
+
+  }
+
+
+  previewImage.src =
+    imageUrl;
+
+
+  previewTitle.textContent =
+    title ||
+    "Wallpaper";
+
+
+  preview.classList.add(
+    "show"
+  );
+
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+function closePreview(){
+
+  preview.classList.remove(
+    "show"
+  );
+
+
+  previewImage.src =
+    "";
+
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+/* =========================================================
+   PREVIEW EVENTS
+========================================================= */
+
+previewClose.addEventListener(
+  "click",
+  closePreview
+);
+
+
+preview.addEventListener(
+  "click",
+  event => {
+
+    if(
+      event.target ===
+      preview
+    ){
+
+      closePreview();
+
+    }
+
+  }
+);
+
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key ===
+      "Escape"
+    ){
+
+      closePreview();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   SEARCH EVENTS
+========================================================= */
+
+searchInput.addEventListener(
+  "input",
+  () => {
+
+    const value =
+      searchInput.value.trim();
+
+
+    clearSearch.classList.toggle(
+      "show",
+      value.length > 0
+    );
+
+
+    /*
+      Search immediately.
+    */
+
+    renderSearchResults();
+
+  }
+);
+
+
+clearSearch.addEventListener(
+  "click",
+  () => {
+
+    searchInput.value =
+      "";
+
+
+    clearSearch.classList.remove(
+      "show"
+    );
+
+
+    searchInput.focus();
+
+
+    /*
+      Back to normal homepage.
+    */
+
+    renderMain();
+
+  }
+);
+
+
+/*
+  Prevent Android/browser search
+  form behaviour.
+*/
+
+searchInput.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key ===
+      "Enter"
+    ){
+
+      event.preventDefault();
+
+      renderSearchResults();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CATEGORY EVENTS
+========================================================= */
+
+document
+  .getElementById("categories")
+  .addEventListener(
+    "click",
+    event => {
+
+      const button =
+        event.target.closest(
+          ".category-btn"
+        );
+
+
+      if(!button){
+        return;
+      }
+
+
+      /*
+        Clear search when category selected.
+      */
+
+      searchInput.value =
+        "";
+
+
+      clearSearch.classList.remove(
+        "show"
+      );
+
+
+      selectedCategory =
+        button.dataset.category;
+
+
+      document
+        .querySelectorAll(
+          ".category-btn"
+        )
+        .forEach(
+          item => {
+
+            item.classList.remove(
+              "active"
+            );
+
+          }
+        );
+
+
+      button.classList.add(
+        "active"
+      );
+
+
+      renderMain();
+
+
+      window.scrollTo({
+        top:0,
+        behavior:"smooth"
+      });
+
+    }
+  );
+
+
+/* =========================================================
+   HERO SLIDESHOW
+========================================================= */
+
+function createHeroSlides(){
+
+  clearInterval(
+    heroTimer
+  );
+
+
+  heroSlides.innerHTML =
+    "";
+
+
+  const list =
+    wallpapers
+      .filter(
+        wallpaper =>
+          wallpaper.image_url
+      )
+      .slice(
+        0,
+        10
+      );
+
+
+  if(!list.length){
+
+    return;
+
+  }
+
+
+  list.forEach(
+    (wallpaper,index) => {
+
+      const image =
+        document.createElement(
+          "img"
+        );
+
+
+      image.className =
+        "hero-image" +
+        (
+          index === 0
+            ? " show"
+            : ""
+        );
+
+
+      image.src =
+        wallpaper.image_url;
+
+
+      image.alt =
+        wallpaper.title ||
+        "Wallpaper";
+
+
+      heroSlides.appendChild(
+        image
+      );
+
+    }
+  );
+
+
+  heroIndex =
+    0;
+
+
+  /*
+    5 second slideshow.
+  */
+
+  if(list.length > 1){
+
+    heroTimer =
+      setInterval(
+        () => {
+
+          const images =
+            heroSlides
+              .querySelectorAll(
+                ".hero-image"
+              );
+
+
+          if(!images.length){
+            return;
+          }
+
+
+          images[
+            heroIndex
+          ]
+          .classList
+          .remove(
+            "show"
+          );
+
+
+          heroIndex =
+            (
+              heroIndex + 1
+            ) %
+            images.length;
+
+
+          images[
+            heroIndex
+          ]
+          .classList
+          .add(
+            "show"
+          );
+
+
+        },
+        5000
+      );
+
+  }
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =========================================================
+   START APPLICATION
+========================================================= */
+
+loadWallpapers();
+
+
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => {
+        console.log("Wallify Service Worker registered");
+      })
+      .catch(error => {
+        console.error(
+          "Wallify Service Worker registration failed:",
+          error
+        );
+      });
+  });
+}
+</script>
+</body>
+</html>
