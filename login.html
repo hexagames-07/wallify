@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wallify - Login</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:#08080d;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.login-box{
+  width:100%;
+  max-width:420px;
+  background:#111118;
+  border:1px solid #292932;
+  border-radius:24px;
+  padding:30px 24px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+
+.logo{
+  text-align:center;
+  font-size:40px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.logo span{
+  color:#7c4dff;
+}
+
+.subtitle{
+  text-align:center;
+  color:#858590;
+  margin-bottom:28px;
+}
+
+input{
+  width:100%;
+  height:54px;
+  margin-bottom:14px;
+  padding:0 18px;
+  border-radius:14px;
+  border:1px solid #363640;
+  background:#181820;
+  color:#fff;
+  outline:none;
+  font-size:16px;
+}
+
+input:focus{
+  border-color:#7c4dff;
+}
+
+button{
+  width:100%;
+  height:52px;
+  border:0;
+  border-radius:14px;
+  background:#7c4dff;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.6;
+}
+
+.switch{
+  margin-top:18px;
+  text-align:center;
+  color:#858590;
+}
+
+.switch button{
+  width:auto;
+  height:auto;
+  padding:0;
+  background:none;
+  color:#9b7aff;
+  font-weight:700;
+}
+
+.message{
+  margin-top:15px;
+  text-align:center;
+  font-size:14px;
+  min-height:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+  <div class="logo">
+    Wall<span>ify</span>
+  </div>
+
+  <div id="subtitle" class="subtitle">
+    Login to Wallify
+  </div>
+
+  <input
+    id="email"
+    type="email"
+    placeholder="Email address"
+    autocomplete="email"
+  >
+
+  <input
+    id="password"
+    type="password"
+    placeholder="Password"
+    autocomplete="current-password"
+  >
+
+  <button id="submitBtn">
+    Login
+  </button>
+
+  <div class="switch">
+    <span id="switchText">
+      Don't have an account?
+    </span>
+
+    <button id="switchBtn" type="button">
+      Create account
+    </button>
+  </div>
+
+  <div id="message" class="message"></div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+  "https://xmlvgdkpmukjwnmfipbr.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_si1g8fi2va2k96oCp7_kHg_q6w6JnB-";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+const email =
+  document.getElementById("email");
+
+const password =
+  document.getElementById("password");
+
+const submitBtn =
+  document.getElementById("submitBtn");
+
+const switchBtn =
+  document.getElementById("switchBtn");
+
+const switchText =
+  document.getElementById("switchText");
+
+const subtitle =
+  document.getElementById("subtitle");
+
+const message =
+  document.getElementById("message");
+
+
+let signupMode = false;
+
+
+/* ===============================
+   CHECK EXISTING SESSION
+================================ */
+
+async function checkSession(){
+
+  const {
+    data
+  } = await supabaseClient
+    .auth
+    .getSession();
+
+  if(data.session){
+
+    window.location.href =
+      "./index.html";
+
+  }
+
+}
+
+checkSession();
+
+
+/* ===============================
+   LOGIN / SIGNUP
+================================ */
+
+submitBtn.addEventListener(
+  "click",
+  async () => {
+
+    const userEmail =
+      email.value.trim();
+
+    const userPassword =
+      password.value;
+
+
+    if(!userEmail || !userPassword){
+
+      message.textContent =
+        "Email and password required.";
+
+      return;
+
+    }
+
+
+    submitBtn.disabled = true;
+
+    message.textContent =
+      "Please wait...";
+
+
+    try{
+
+      let result;
+
+
+      if(signupMode){
+
+        result =
+          await supabaseClient
+            .auth
+            .signUp({
+              email:userEmail,
+              password:userPassword
+            });
+
+      }else{
+
+        result =
+          await supabaseClient
+            .auth
+            .signInWithPassword({
+              email:userEmail,
+              password:userPassword
+            });
+
+      }
+
+
+      if(result.error){
+
+        message.textContent =
+          result.error.message;
+
+        submitBtn.disabled = false;
+
+        return;
+
+      }
+
+
+      if(signupMode){
+
+        message.textContent =
+          "Account created successfully.";
+
+        /*
+          Depending on Supabase email
+          confirmation settings, the user
+          may need to verify email first.
+        */
+
+        if(result.data.session){
+
+          window.location.href =
+            "./index.html";
+
+        }
+
+      }else{
+
+        window.location.href =
+          "./index.html";
+
+      }
+
+
+    }catch(error){
+
+      console.error(error);
+
+      message.textContent =
+        "Something went wrong.";
+
+    }
+
+
+    submitBtn.disabled = false;
+
+  }
+);
+
+
+/* ===============================
+   SWITCH LOGIN / SIGNUP
+================================ */
+
+switchBtn.addEventListener(
+  "click",
+  () => {
+
+    signupMode =
+      !signupMode;
+
+
+    if(signupMode){
+
+      subtitle.textContent =
+        "Create your Wallify account";
+
+      submitBtn.textContent =
+        "Create account";
+
+      switchText.textContent =
+        "Already have an account?";
+
+      switchBtn.textContent =
+        "Login";
+
+    }else{
+
+      subtitle.textContent =
+        "Login to Wallify";
+
+      submitBtn.textContent =
+        "Login";
+
+      switchText.textContent =
+        "Don't have an account?";
+
+      switchBtn.textContent =
+        "Create account";
+
+    }
+
+    message.textContent = "";
+
+  }
+);
+
+</script>
+
+</body>
+</html>
